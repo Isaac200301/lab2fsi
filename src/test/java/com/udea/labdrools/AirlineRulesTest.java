@@ -11,17 +11,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Pruebas de las diez reglas de negocio ejecutadas sobre el motor real de Drools.
+ *
+ * <p>Cada prueba parte de un pasajero y un vuelo base que no activan ninguna regla y cambia
+ * solo los datos necesarios para activar la regla bajo prueba. También se verifican los límites
+ * (por ejemplo, un retraso de exactamente 60 minutos no activa la Regla 1) y los dos conflictos
+ * resueltos entre reglas (1 contra 4 y 5 contra 10).</p>
+ */
 @SpringBootTest
 class AirlineRulesTest {
 
     @Autowired
     private AirlineEvaluationService service;
 
-    // Pasajero y vuelo base que no activan ninguna regla
+    /** Pasajero base: 30 años, Basic, ventana, sin niños y 12 kg; no activa ninguna regla. */
     private Passenger basePassenger() {
         return new Passenger("Ana Gómez", 30, "Basic", "Window", false, 12);
     }
 
+    /** Vuelo base: sin retraso, 3 horas, sin salida de emergencia libre y tiquete de $500. */
     private Flight baseFlight() {
         return new Flight("AV123", 0, 3, false, 500);
     }

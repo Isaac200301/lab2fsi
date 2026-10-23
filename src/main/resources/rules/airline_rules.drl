@@ -1,3 +1,23 @@
+/*
+ * Reglas de negocio de la aerolínea (Laboratorio 2).
+ *
+ * Hechos que inserta AirlineEvaluationService en cada sesión:
+ *   - Passenger       : datos del pasajero (solo lectura).
+ *   - Flight          : datos del vuelo (la Regla 5 lo modifica).
+ *   - AirlineResponse : resultado que las reglas van llenando.
+ *
+ * Convenciones:
+ *   - Cada regla registra su activación con $response.addRule(drools.getRule().getName(), mensaje),
+ *     de modo que la respuesta lista las reglas aplicadas y por qué.
+ *   - Los umbrales son estrictos, igual que en el enunciado ("más de 60 minutos" es > 60).
+ *   - "Sin preferencia de asiento" se representa con seatPreference == "Any".
+ *
+ * Conflictos resueltos:
+ *   - Reglas 1 y 4: la Regla 4 tiene salience 100 y usa modify(), así que se ejecuta primero y
+ *     Drools reevalúa la Regla 1, que exige upgradeEligible == true y por tanto no se activa.
+ *   - Reglas 5 y 10: la Regla 5 exige travelingWithChildren == false; así un pasajero con niños
+ *     nunca queda en la salida de emergencia y recibe el asiento para familias.
+ */
 package rules
 
 import com.udea.labdrools.model.Passenger

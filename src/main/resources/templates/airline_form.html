@@ -30,6 +30,11 @@
     </style>
 </head>
 <body>
+<!--
+  Formulario de evaluación (AirlineController#showForm y #evaluateWeb).
+  Los campos se enlazan a airlineRequest.passenger y airlineRequest.flight; si la validación
+  falla, la vista se vuelve a mostrar y th:errors pinta el mensaje bajo cada campo.
+-->
 <div class="form-container">
     <h2>Evaluación de Pasajero - Aerolínea</h2>
     <p class="text-muted">Reglas de negocio ejecutadas con Drools.</p>
@@ -111,6 +116,7 @@
             </div>
         </div>
 
+        <!-- No pertenece a AirlineRequest: llega al controlador como @RequestParam explain -->
         <div class="form-check mt-4">
             <input type="checkbox" id="explain" name="explain" value="true" class="form-check-input" checked>
             <label for="explain" class="form-check-label">Explicar el resultado con IA</label>
