@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: labdrools
+  ai:
+    openai:
+      # La API key se lee de la variable de entorno OPENAI_API_KEY (nunca se sube al repositorio)
+      api-key: ${OPENAI_API_KEY:sin-configurar}
+      chat:
+        options:
+          model: gpt-4o-mini
+          temperature: 0.3
