@@ -1,0 +1,411 @@
+{
+  "info": {
+    "name": "Lab 2 - Reglas de aerolínea con Drools",
+    "description": "Un caso por cada una de las 10 reglas, validación y explicación con IA.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Test 01 UpgradeToBusinessClassForFrequentFlyersWithDelays",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Carlos García\",\n    \"age\": 30,\n    \"membershipStatus\": \"Gold\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 90,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Pasajero Gold con 90 minutos de retraso: asciende a clase ejecutiva."
+      }
+    },
+    {
+      "name": "Test 02 PriorityCheckInForSeniors",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Rosa Méndez\",\n    \"age\": 70,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Pasajero de 70 años: check-in prioritario."
+      }
+    },
+    {
+      "name": "Test 03 DiscountForLightLuggage",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Juan Pérez\",\n    \"age\": 30,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 8\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Equipaje de 8 kg: 10% de descuento sobre el tiquete de $500."
+      }
+    },
+    {
+      "name": "Test 04 DenyUpgradeForOverweightLuggage",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Sofía Ramírez\",\n    \"age\": 30,\n    \"membershipStatus\": \"Gold\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 25\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 90,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Gold con 90 minutos de retraso pero 25 kg de equipaje: no elegible, no asciende."
+      }
+    },
+    {
+      "name": "Test 05 AssignEmergencyExitSeatToYoungAdults",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Pedro Sánchez\",\n    \"age\": 28,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Any\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": true,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "28 años, preferencia Any y asiento de salida disponible: se asigna y queda ocupado."
+      }
+    },
+    {
+      "name": "Test 06 CompensationForExtremeDelays",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Diego Morales\",\n    \"age\": 30,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 200,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Vuelo con 200 minutos de retraso: compensación de $200."
+      }
+    },
+    {
+      "name": "Test 07 ExtraLoyaltyPointsForLongFlights",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"María López\",\n    \"age\": 30,\n    \"membershipStatus\": \"Silver\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 6,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Membresía Silver en vuelo de 6 horas: 500 puntos de lealtad."
+      }
+    },
+    {
+      "name": "Test 08 RestrictLuggageOnShortFlights",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Luis Martínez\",\n    \"age\": 30,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 18\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 1.5,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "18 kg de equipaje en vuelo de 1,5 horas: equipaje no permitido."
+      }
+    },
+    {
+      "name": "Test 09 VipLoungeAccessForPlatinumMembers",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Valentina Ruiz\",\n    \"age\": 30,\n    \"membershipStatus\": \"Platinum\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Membresía Platinum: acceso al salón VIP."
+      }
+    },
+    {
+      "name": "Test 10 PreferentialSeatForFamilies",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Laura Torres\",\n    \"age\": 35,\n    \"membershipStatus\": \"Basic\",\n    \"seatPreference\": \"Any\",\n    \"travelingWithChildren\": true,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": true,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Viaja con niños, preferencia Any y salida disponible: asiento para familias, no salida de emergencia."
+      }
+    },
+    {
+      "name": "Test 11 Validación de datos",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"\",\n    \"age\": 30,\n    \"membershipStatus\": \"Diamond\",\n    \"seatPreference\": \"Window\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 12\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV123\",\n    \"delayMinutes\": 0,\n    \"durationHours\": 3,\n    \"emergencyExitSeatAvailable\": false,\n    \"ticketPrice\": 500\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate"
+          ]
+        },
+        "description": "Nombre vacío y membresía inexistente: 400 Bad Request con los mensajes de validación."
+      }
+    },
+    {
+      "name": "Test 12 Explicación con IA",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"passenger\": {\n    \"name\": \"Laura Torres\",\n    \"age\": 28,\n    \"membershipStatus\": \"Gold\",\n    \"seatPreference\": \"Any\",\n    \"travelingWithChildren\": false,\n    \"luggageWeight\": 25\n  },\n  \"flight\": {\n    \"flightNumber\": \"AV245\",\n    \"delayMinutes\": 200,\n    \"durationHours\": 6,\n    \"emergencyExitSeatAvailable\": true,\n    \"ticketPrice\": 600\n  }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/airline/api/evaluate-ai",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "airline",
+            "api",
+            "evaluate-ai"
+          ]
+        },
+        "description": "Varias reglas a la vez y explicación generada por la IA."
+      }
+    }
+  ]
+}
