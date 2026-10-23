@@ -29,6 +29,20 @@ public class AIExplanationService {
         String prompt = """
                 Eres un experto en reglas de negocio de aerolíneas.
                 Explica, en español y de forma breve, el siguiente resultado generado por Drools.
+                Usa únicamente las condiciones de las reglas listadas abajo; no inventes criterios.
+                Responde en texto plano, sin Markdown, sin tablas y sin asteriscos.
+
+                Catálogo de reglas (condición -> acción):
+                1. UpgradeToBusinessClassForFrequentFlyersWithDelays: membresía Gold o Platinum y retraso > 60 min, si sigue elegible para ascensos -> clase ejecutiva.
+                2. PriorityCheckInForSeniors: edad > 65 -> check-in prioritario.
+                3. DiscountForLightLuggage: equipaje < 10 kg -> 10%% de descuento.
+                4. DenyUpgradeForOverweightLuggage: equipaje > 23 kg -> no elegible para ascensos.
+                5. AssignEmergencyExitSeatToYoungAdults: edad entre 18 y 40, preferencia de asiento Any, no viaja con niños y hay asiento de salida de emergencia disponible -> asigna ese asiento y lo marca como ocupado.
+                6. CompensationForExtremeDelays: retraso > 180 min -> compensación de $200.
+                7. ExtraLoyaltyPointsForLongFlights: membresía distinta de Basic y vuelo > 5 horas -> 500 puntos de lealtad.
+                8. RestrictLuggageOnShortFlights: equipaje > 15 kg y vuelo < 2 horas -> equipaje no permitido.
+                9. VipLoungeAccessForPlatinumMembers: membresía Platinum -> acceso al salón VIP.
+                10. PreferentialSeatForFamilies: viaja con niños y preferencia de asiento Any -> asiento preferencial para familias.
 
                 Pasajero: %s, %d años, membresía %s, preferencia de asiento %s, viaja con niños: %s, equipaje %.1f kg.
                 Vuelo: %s, retraso %d minutos, duración %.1f horas, precio del tiquete $%.2f.
