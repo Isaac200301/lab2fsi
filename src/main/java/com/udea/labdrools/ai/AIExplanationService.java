@@ -17,12 +17,12 @@ public class AIExplanationService {
     public AIExplanationService(ChatClient.Builder builder,
                                 @Value("${spring.ai.openai.api-key:}") String apiKey) {
         this.chatClient = builder.build();
-        this.configured = apiKey != null && apiKey.startsWith("sk-");
+        this.configured = apiKey != null && !apiKey.isBlank() && !apiKey.equals("sin-configurar");
     }
 
     public String explain(AirlineRequest request, AirlineResponse response) {
         if (!configured) {
-            return "Explicación de IA no disponible: configure la variable de entorno OPENAI_API_KEY.";
+            return "Explicación de IA no disponible: configure la variable de entorno AI_API_KEY.";
         }
         Passenger p = request.getPassenger();
         Flight f = request.getFlight();
