@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Esquema de datos del CRM de AeroVirtual",
+  "description": "Adaptación del esquema CRM del Laboratorio 3 al dominio de la aerolínea virtual. Las 'deals' del CRM son reservas; los 'contactos' son pasajeros; los 'productos' son vuelos.",
+  "type": "object",
+  "properties": {
+    "users": { "type": "array", "items": { "$ref": "#/$defs/user" } },
+    "stages": { "type": "array", "items": { "$ref": "#/$defs/stage" } },
+    "passengers": { "type": "array", "items": { "$ref": "#/$defs/passenger" } },
+    "flights": { "type": "array", "items": { "$ref": "#/$defs/flight" } },
+    "bookings": { "type": "array", "items": { "$ref": "#/$defs/booking" } }
+  },
+  "$defs": {
+    "user": {
+      "description": "Agente de ventas (equivale a 'users' del CRM).",
+      "type": "object",
+      "required": ["id", "full_name", "email", "role", "team", "quota_amount", "status"],
+      "properties": {
+        "id": { "type": "string" },
+        "full_name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["sales_rep", "manager"] },
+        "team": { "type": "string", "enum": ["Ventas Online", "Call Center", "Aeropuerto"] },
+        "quota_amount": { "type": "number", "description": "Cuota de ingresos (USD) para el periodo de referencia." },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "avatar_url": { "type": "string" }
+      }
+    },
+    "stage": {
+      "description": "Etapa del pipeline (equivale a 'pipeline_stages').",
+      "type": "object",
+      "required": ["id", "name", "display_order", "win_probability", "type"],
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "enum": ["Cotización", "Reserva", "Check-in", "Abordaje", "Vuelo completado", "Cancelado"] },
+        "display_order": { "type": "integer" },
+        "win_probability": { "type": "number", "minimum": 0, "maximum": 100 },
+        "type": { "type": "string", "enum": ["open", "won", "lost"] }
+      }
+    },
+    "passenger": {
+      "description": "Pasajero (equivale a 'contacts'). Incluye los atributos que usan las reglas de Drools.",
+      "type": "object",
+      "required": ["id", "full_name", "age", "membership_status", "created_at"],
+      "properties": {
+        "id": { "type": "string" },
+        "full_name": { "type": "string" },
+        "email": { "type": "string" },
+        "phone": { "type": "string" },
+        "city": { "type": "string" },
+        "age": { "type": "integer", "minimum": 0 },
+        "membership_status": { "type": "string", "enum": ["Basic", "Silver", "Gold", "Platinum"] },
+        "created_at": { "type": "string", "format": "date-time" }
+      }
+    },
+    "flight": {
+      "description": "Vuelo (equivale a 'products' o 'companies').",
+      "type": "object",
+      "required": ["id", "flight_number", "origin", "destination", "departure_date", "delay_minutes", "duration_hours", "base_price"],
+      "properties": {
+        "id": { "type": "string" },
+        "flight_number": { "type": "string" },
+        "origin": { "type": "string" },
+        "destination": { "type": "string" },
+        "departure_date": { "type": "string", "format": "date" },
+        "delay_minutes": { "type": "integer", "minimum": 0 },
+        "duration_hours": { "type": "number", "exclusiveMinimum": 0 },
+        "emergency_exit_seat_available": { "type": "boolean" },
+        "base_price": { "type": "number", "minimum": 0 }
+      }
+    },
+    "evaluation": {
+      "description": "Respuesta del motor Drools (POST /airline/api/evaluate) guardada con la reserva.",
+      "type": "object",
+      "properties": {
+        "seatClass": { "type": "string" },
+        "priorityCheckIn": { "type": "boolean" },
+        "discountPercentage": { "type": "number" },
+        "finalPrice": { "type": "number" },
+        "upgradeEligible": { "type": "boolean" },
+        "assignedSeat": { "type": "string" },
+        "compensation": { "type": "number" },
+        "extraLoyaltyPoints": { "type": "integer" },
+        "luggageAllowed": { "type": "boolean" },
+        "vipLoungeAccess": { "type": "boolean" },
+        "appliedRules": { "type": "array", "items": { "type": "string" } },
+        "messages": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "booking": {
+      "description": "Reserva (equivale a 'deals'). Es la entidad central del dashboard.",
+      "type": "object",
+      "required": ["id", "passenger_id", "flight_id", "owner_id", "stage_id", "amount", "status", "created_at", "evaluation"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "passenger_id": { "type": "string" },
+        "flight_id": { "type": "string" },
+        "owner_id": { "type": "string", "description": "FK a users.id (agente responsable)." },
+        "stage_id": { "type": "string", "description": "FK a stages.id." },
+        "amount": { "type": "number", "description": "Precio base antes de reglas." },
+        "currency": { "type": "string", "const": "USD" },
+        "status": { "type": "string", "enum": ["open", "won", "lost"] },
+        "seat_preference": { "type": "string", "enum": ["Any", "Window", "Aisle"] },
+        "traveling_with_children": { "type": "boolean" },
+        "luggage_weight": { "type": "number", "minimum": 0 },
+        "created_at": { "type": "string", "format": "date-time" },
+        "expected_close_date": { "type": "string", "format": "date" },
+        "closed_at": { "type": ["string", "null"], "format": "date-time" },
+        "loss_reason": { "type": ["string", "null"] },
+        "evaluation": { "$ref": "#/$defs/evaluation" }
+      }
+    }
+  }
+}
